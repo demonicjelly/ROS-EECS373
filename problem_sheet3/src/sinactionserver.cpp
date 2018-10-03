@@ -1,36 +1,7 @@
-#include<ros/ros.h> 
-#include<std_msgs/Float64.h> 
-#include <actionlib/server/simple_action_server.h>
-
-#include<problem_sheet3/SinMsg.h>
-
-
-class SinActionServer {
-
-private:
-
-	ros:: NodeHandle nh;
-
-	actionlib:: SimpleActionServer<problem_sheet3::sinWaveMsgAction> as_;
-
-	minimal_nodes::sinWaveMsgGoal goal_;
-	minimal_nodes::sinWaveMsgResult result_;
-	minimal_nodes::sinWaveMsgFeedback feedback_;
-
-
-public:
-
-	SinWaveServer();
-
-	SinWaveServer(void){
-	}
-
-	void executeCB(const actionlib::SimpleActionServer<problem_sheet3::sinWaveMsgAction>::GoalConstPtr& goal);
-
-
+#include<problem_sheet3/sinactionserver.h>
 
 SinActionServer::SinActionServer() :
-	as_(nh, "sin_action", boost::bind(&problem_sheet3::executeCB, this, _1), false)
+	as_(nh, "sin_action", boost::bind(&SinActionServer::executeCB, this, _1), false)
 	{
 		ROS_INFO("Initialising");
 		
@@ -47,7 +18,7 @@ SinActionServer::SinActionServer() :
 	}
 
 
-void SinActionServer::executeCB(const actionlib::SimpleActionServer<problem_sheet3::sinWaveMsgAction>::GoalConstPrt& goal){
+void SinActionServer::executeCB(const actionlib::SimpleActionServer<problem_sheet3::SinMsgAction>::GoalConstPtr& goal){
 
 	double amplitude = goal_.amplitude;
 	double frequency = goal_.frequency;
@@ -76,7 +47,7 @@ void SinActionServer::executeCB(const actionlib::SimpleActionServer<problem_shee
 	while(ros::ok() && cycles < 0){
 
 	//Calculate sinusoidal velocities
-	velocity = amplitude * (2*3.14*g_frequency) * cos(2*3.14*g_frequency*t); 
+	velocity = amplitude * (2*3.14*frequency) * cos(2*3.14*frequency*t); 
 
 		sin_vel.data = velocity; //put sin_vel double into the Float64 mesage to be published
 		
@@ -91,7 +62,7 @@ void SinActionServer::executeCB(const actionlib::SimpleActionServer<problem_shee
 		naptime.sleep(); 
     }
 
-	as_setSucceeded(result_);
+	as_.setSucceeded(result_);
 }
 
 

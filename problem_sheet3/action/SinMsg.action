@@ -5,7 +5,7 @@ int32 frequency
 int32 cycles
 ---
 #result
-int32 output
+bool output
 ---
 #feedback
 int32 fdbk

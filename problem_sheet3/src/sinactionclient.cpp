@@ -1,15 +1,17 @@
 #include<ros/ros.h> 
 #include<std_msgs/Float64.h> 
+#include <actionlib/client/simple_action_client.h>
 
-#include<problem_sheet3/SinMsg.h>
+#include<problem_sheet3/SinMsgAction.h>
 
 //using namespace std;
 
-void doneCb(const actionlib::SimpleClientFoalState& state, const sinactionserver::sinWaveMsgResultConstPtr& result){
+/*
+void doneCb(const actionlib::SimpleClientGoalState& state, const sinactionserver::sinWaveResultConstPtr& result){
 	//THIS ISNT ESSENTIAL, can be called when goal completes 
 	
 }
-
+*/
 
 
 int main(int argc, char **argv) {
@@ -18,7 +20,10 @@ int main(int argc, char **argv) {
 	
 	int g_count = 0;
 	
-	actionlib::SimpleActionClient<problem_sheet3::sinWaveMsgAction> action_client("sin_action", true);
+	problem_sheet3::SinMsgGoal goal;
+	problem_sheet3::SinMsgResult result;
+
+	actionlib::SimpleActionClient<problem_sheet3::SinMsgAction> action_client("sin_action", true);
 	
 	// attempt to connect to the server:
     ROS_INFO("waiting for server: ");
@@ -34,7 +39,7 @@ int main(int argc, char **argv) {
 	
 	int amplitude;
 	int frequency;
-	int cycles
+	int cycles;
 	
 	while (ros::ok()){
 		std::cout << std::endl;
@@ -52,23 +57,20 @@ int main(int argc, char **argv) {
 		goal.cycles = cycles;
 		
 		
-		action_client.sendGoal(goal, &doneCb);
+		action_client.sendGoal(goal);
 		
 		ros::Time begin = ros::Time::now();
 
         //bool finished_before_timeout = action_client.waitForResult(); // wait forever...
-        if (result){
+        if (result.output){
             //if here, then server returned a result to us
             
             ros::Time end = ros::Time::now();
             
             double timer = end.toSec() - begin.toSec();
             
-            ROS_INFO("Server returned result after %d seconds", timer);
-            
+            ROS_INFO("Server returned result after %f seconds", timer);
         }
-		
-
 	}
 	return 0;
 }

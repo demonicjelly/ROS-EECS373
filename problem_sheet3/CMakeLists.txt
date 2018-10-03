@@ -35,15 +35,18 @@ catkin_simple()
 # may add more of these lines for more nodes from the same package
 # cs_add_executable(example src/example.cpp)
 
-add_executable(minimal_sim src/minimal_simulator.cpp)
-add_executable(minimal_cont src/minimal_controller.cpp)
-add_executable(sin_comm src/sin_commander.cpp)
-add_executable(sinactionclient src/sinactionclient.cpp)
-add_executable(sinactionserver src/sinactionserver.cpp)
+cs_add_executable(minimal_sim src/minimal_simulator.cpp)
+cs_add_executable(minimal_cont src/minimal_controller.cpp)
+cs_add_executable(sin_comm src/sin_commander.cpp)
+cs_add_executable(sinactionclient src/sinactionclient.cpp)
+
+cs_add_library(sinactionserver src/sinactionserver.cpp)
 
 #the following is required, if desire to link a node in this package with a library created in this same package
 # edit the arguments to reference the named node and named library within this package
 # target_link_libraries(example my_lib)
+
+target_link_libraries(sinactionserver)
 
 cs_install()
 cs_export()

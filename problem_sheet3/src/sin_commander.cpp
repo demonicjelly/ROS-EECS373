@@ -1,11 +1,14 @@
 #include<ros/ros.h> 
 #include<std_msgs/Float64.h> 
 
-#include<problem_sheet3/SinMsg.h>
+#include<problem_sheet3/SinMsgAction.h>
 
+#include<problem_sheet3/sinactionserver.h>
+
+/*
 int g_amplitude;
 int g_frequency;
-
+*/
 /*
 bool callback(problem_sheet2::SinWaveMsgRequest& request, problem_sheet2::SinWaveMsgResponse& response)
 {
@@ -27,6 +30,10 @@ bool callback(problem_sheet2::SinWaveMsgRequest& request, problem_sheet2::SinWav
 int main(int argc, char **argv) {
 	ros::init(argc, argv, "sin_comm"); //name this node  
 	ros::NodeHandle nh; // node handle 
+
+	ROS_INFO("instantiating the demo action server: ");
+
+	SinActionServer as_object;
 
 /*
 //Set up publisher
@@ -55,6 +62,7 @@ int main(int argc, char **argv) {
 	ROS_INFO("Input Frequency");
 	std::cin >> frequency;
 */
+
 
 	
 
