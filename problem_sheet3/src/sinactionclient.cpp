@@ -14,11 +14,11 @@ void doneCb(const actionlib::SimpleClientGoalState& state, const sinactionserver
 */
 
 
+
 int main(int argc, char **argv) {
 	ros::init(argc, argv, "sin_srv_client"); //name this node  
 	ros::NodeHandle nh; // node handle 
-	
-	int g_count = 0;
+
 	
 	problem_sheet3::SinMsgGoal goal;
 	problem_sheet3::SinMsgResult result;
@@ -37,9 +37,9 @@ int main(int argc, char **argv) {
 	
     ROS_INFO("connected to action server"); // if here, then we connected to the server;
 	
-	int amplitude;
-	int frequency;
-	int cycles;
+	double amplitude;
+	double frequency;
+	double cycles;
 	
 	while (ros::ok()){
 		std::cout << std::endl;
@@ -55,22 +55,28 @@ int main(int argc, char **argv) {
 		goal.amplitude = amplitude;
 		goal.frequency = frequency;
 		goal.cycles = cycles;
-		
-		
+	
 		action_client.sendGoal(goal);
-		
 		ros::Time begin = ros::Time::now();
+		
 
+
+        bool finished_before_timeout = action_client.waitForResult();
         //bool finished_before_timeout = action_client.waitForResult(); // wait forever...
-        if (result.output){
-            //if here, then server returned a result to us
+        if (!finished_before_timeout) {
+            ROS_WARN("giving up waiting on result");
+            return 0;
+        } else {
             
-            ros::Time end = ros::Time::now();
-            
+		    ros::Time end = ros::Time::now();
             double timer = end.toSec() - begin.toSec();
-            
             ROS_INFO("Server returned result after %f seconds", timer);
-        }
+        }            
+
+            
+        result.output = false; 
+           
+	
 	}
 	return 0;
 }

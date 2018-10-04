@@ -36,6 +36,7 @@ public:
 
 	void executeCB(const actionlib::SimpleActionServer<problem_sheet3::SinMsgAction>::GoalConstPtr& goal);
 
+
 };
 
 #endif

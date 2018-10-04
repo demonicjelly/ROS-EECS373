@@ -1,8 +1,8 @@
 #goal
 
-int32 amplitude
-int32 frequency
-int32 cycles
+float64 amplitude
+float64 frequency
+float64 cycles
 ---
 #result
 bool output
