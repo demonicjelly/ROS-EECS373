@@ -61,14 +61,13 @@ int main(int argc, char **argv) {
 		
 
 
-        bool finished_before_timeout = action_client.waitForResult();
+        bool finished = action_client.waitForResult();
         //bool finished_before_timeout = action_client.waitForResult(); // wait forever...
-        if (!finished_before_timeout) {
+        if (!finished) {
             ROS_WARN("giving up waiting on result");
             return 0;
         } else {
-            
-		    ros::Time end = ros::Time::now();
+            ros::Time end = ros::Time::now();
             double timer = end.toSec() - begin.toSec();
             ROS_INFO("Server returned result after %f seconds", timer);
         }            
