@@ -93,7 +93,7 @@ int main(int argc, char** argv)
     {     
 	//Calulate trajectory points using sin function
 	trajectory_points.positions[0] = -a1*sin(freq*t);
-	trajectory_points.positions[1] = abs(a2*sin(freq*t));
+	trajectory_points.positions[1] = a2*sin(freq*t);
 	trajectory_points.positions[2] = a3*sin(freq*t)*sin(freq*t);
 	trajectory_points.positions[3] = -a4*sin(freq*t);
 	trajectory_points.positions[4] = -a5*sin(freq*t);
