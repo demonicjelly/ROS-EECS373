@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(irb120_ctl_interface)
+project(irb120_task_commander)
 
 find_package(catkin_simple REQUIRED)
 
@@ -24,19 +24,16 @@ catkin_simple()
 
 # C++0x support - not quite the same as final C++11!
 # use carefully;  can interfere with point-cloud library
-# SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
 
 # Libraries: uncomment the following and edit arguments to create a new library
 # cs_add_library(my_lib src/my_lib.cpp)   
 
 # Executables: uncomment the following and edit arguments to compile new nodes
 # may add more of these lines for more nodes from the same package
-# cs_add_executable(example src/example.cpp)
-cs_add_executable(irb120_ctl_interface src/irb120_ctl_interface.cpp)
-#cs_add_executable(interactive_irb5400_sender src/interactive_irb5400_sender.cpp)
-cs_add_executable(test_traj_sender_irb120 src/test_traj_sender_irb120.cpp)
-cs_add_executable(test_traj_sin_sender_irb120 src/test_traj_sin_sender_irb120.cpp)
-
+cs_add_executable(irb120_task_commander src/irb120_task_commander.cpp)
+cs_add_executable(irb120_reactive_task_commander src/irb120_reactive_task_commander.cpp)
+cs_add_executable(irb120_move_object src/irb120_move_object.cpp)
 
 #the following is required, if desire to link a node in this package with a library created in this same package
 # edit the arguments to reference the named node and named library within this package
