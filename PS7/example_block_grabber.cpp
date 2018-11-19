@@ -25,15 +25,15 @@ using namespace std;
 
 double x;
 double y;
-bool block = false;
+bool found_block = false;
 
-void myCallback(const geometry_msgs::PoseStamped& message_holder)
+void postionCB(const geometry_msgs::PoseStamped& message_holder)
 {
  
     x = message_holder.pose.position.x;
     y = message_holder.pose.position.y;
       ROS_INFO("x: %f; y: %f", x , y);
-    block = true;
+    found_block = true;
 }
 
 int main(int argc, char** argv) {
@@ -45,7 +45,7 @@ int main(int argc, char** argv) {
     std_srvs::SetBool srv;
     srv.request.data = true;
     //subscribe to block pose
- ros::Subscriber my_subscriber_object= nh.subscribe("block_pose",1,myCallback);
+ ros::Subscriber my_subscriber_object= nh.subscribe("block_pose",1,positionCB);
    
     Eigen::VectorXd joint_angles;
     Eigen::Vector3d dp_displacement;
@@ -96,7 +96,7 @@ int main(int argc, char** argv) {
     while (ros::ok()) {
         //move out of way for camera view:
         ROS_INFO("moving out of camera view");
-    tool_pose.pose.position.x= 0.3;
+    	tool_pose.pose.position.x= 0.3;
         tool_pose.pose.position.y= 0.3;
         tool_pose.pose.position.z = 0.3; //0.01;         
         ROS_INFO("requesting plan to descend:");
@@ -110,15 +110,15 @@ int main(int argc, char** argv) {
             ROS_WARN("unsuccessful plan; rtn_code = %d", rtn_val);
         }       
       
-    //wait on the callback until the x, y values are populated
-    while(!block) {
+    //run positionCB while the block has not been found 
+    while(!found_block) {
         ros::spinOnce();
          ros::Duration(0.5).sleep();
     }
    
         //move to approach pose:
         ROS_INFO("moving to approach pose");
-     tool_pose.pose.position.x = x;
+     	tool_pose.pose.position.x = x; 	//Approach pose has been changed to include the x and y values found previously 
         tool_pose.pose.position.y = y;
         tool_pose.pose.position.z = 0.05; //0.01;         
         ROS_INFO("requesting plan to descend:");
@@ -149,7 +149,7 @@ int main(int argc, char** argv) {
             ROS_WARN("unsuccessful plan; rtn_code = %d", rtn_val);
         }
 		
-		ros::Duration(1).sleep();
+	ros::Duration(1).sleep();	//sleep in between steps to ensure everything runs as it should
 	
         ROS_INFO("enabling vacuum gripper");
         //enable the vacuum gripper:
@@ -160,10 +160,10 @@ int main(int argc, char** argv) {
             ros::Duration(0.5).sleep();
         }
 
-		ros::Duration(1).sleep();
+	ros::Duration(1).sleep(); //sleep in between steps to ensure everything runs as it should
 
-		tool_pose.pose.position.z = 0.3;
-
+	//Move directly up from the grasping pose
+	tool_pose.pose.position.z = 0.3;
         ROS_INFO("requesting plan to depart with grasped object:");        
         xformUtils.printPose(tool_pose);
         rtn_val = cart_motion_commander.plan_cartesian_traj_qprev_to_des_tool_pose(nsteps, arrival_time, tool_pose);
@@ -176,8 +176,7 @@ int main(int argc, char** argv) {
         }
 
 
-//move to the desired area here
-     
+	//move to the block to the desired location
         ROS_INFO("moving to approach pose");
     	tool_pose.pose.position.x= 0.5;
         tool_pose.pose.position.y=0.5;
@@ -192,17 +191,8 @@ int main(int argc, char** argv) {
         } else {
             ROS_WARN("unsuccessful plan; rtn_code = %d", rtn_val);
         }      
-       
-
-		
-
-
-
-
-
-
+      
         //disable the vacuum gripper:
-
         srv.request.data = false;
         while (!client.call(srv) && ros::ok()) {
             ROS_INFO("Sending command to gripper...");
@@ -210,8 +200,8 @@ int main(int argc, char** argv) {
             ros::Duration(0.5).sleep();
         }
 
-		block = false;
-		ros::Duration(3).sleep();
+	found_block = false;	//reset the found_block variable
+	ros::Duration(3).sleep();	//Sleep in between iterations of the while loop
 
     }
 
