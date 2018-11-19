@@ -27,7 +27,7 @@ double x;
 double y;
 bool found_block = false;
 
-void postionCB(const geometry_msgs::PoseStamped& message_holder)
+void positionCB(const geometry_msgs::PoseStamped& message_holder)
 {
  
     x = message_holder.pose.position.x;
@@ -45,7 +45,7 @@ int main(int argc, char** argv) {
     std_srvs::SetBool srv;
     srv.request.data = true;
     //subscribe to block pose
- ros::Subscriber my_subscriber_object= nh.subscribe("block_pose",1,positionCB);
+ ros::Subscriber my_subscriber_object= nh.subscribe("block_pose",1, positionCB);
    
     Eigen::VectorXd joint_angles;
     Eigen::Vector3d dp_displacement;
