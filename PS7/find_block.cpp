@@ -131,14 +131,16 @@ void ImageConverter::imageCb(const sensor_msgs::ImageConstPtr& msg){
         // can view this stream in ROS with:
         //rosrun image_view image_view image:=/image_converter/output_video
         image_pub_.publish(cv_ptr->toImageMsg());
-
-    double x = 0.002951 * (i_centroid - 320);
-    double y = 0.002951 * (j_centroid - 240);
+        
+        //calculate block location in relation to the camera
+        double x = 0.002951 * (i_centroid - 320);
+        double y = 0.002951 * (j_centroid - 240);
        
+        //Calculate, and then set to the block pose variable, the block position in realtion to the robot frame
         block_pose_.pose.position.x = 0.9788 * x - 0.204 * y + .545; //not true, but legal
-    block_pose_.pose.position.y = -1 * (0.204 * x + 0.9788 * y - .317); //not true, but legal
+        block_pose_.pose.position.y = -1 * (0.204 * x + 0.9788 * y - .317); //not true, but legal
         double theta= -.206;
-    ROS_INFO("x: %f; y: %f",block_pose_.pose.position.x,block_pose_.pose.position.y);
+        ROS_INFO("x: %f; y: %f",block_pose_.pose.position.x,block_pose_.pose.position.y); //Print out the block pose to check them
        
         // need camera info to fill in x,y,and orientation x,y,z,w
         //geometry_msgs::Quaternion quat_est
